@@ -1,0 +1,12 @@
+{% extends "TuringSimulator/base.html" %}
+{% block content %}
+    <ul>
+    {% for machine in machines %}
+        {% if user.is_authenticated and user == machine.author or machine.author.is_superuser  %}
+            <li>
+              <a href="{% url 'machine-detail' machine.id %}">{{ machine }}</a>
+            </li>
+        {% endif %}
+    {% endfor %}
+    </ul>
+{% endblock content %}
