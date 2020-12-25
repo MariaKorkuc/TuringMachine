@@ -8,9 +8,21 @@ class Migration(migrations.Migration):
     dependencies = [
         ('TuringSimulator', '0003_auto_20201204_1230'),
     ]
+    #
+    # operations = [
+    #     migrations.AlterField(
+    #         model_name='turingmachinedb',
+    #         name='is_decisive',
+    #         field=models.BooleanField(default=False),
+    #     ),
+    # ]
 
     operations = [
-        migrations.AlterField(
+        migrations.RemoveField(
+            model_name='turingmachinedb',
+            name='is_decisive',
+        ),
+        migrations.AddField(
             model_name='turingmachinedb',
             name='is_decisive',
             field=models.BooleanField(default=False),
