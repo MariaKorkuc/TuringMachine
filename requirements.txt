@@ -26,6 +26,7 @@ cycler==0.10.0
 distlib==0.3.0
 Django==3.1.2
 django-cleanup==5.1.0
+django-heroku==0.3.1
 django-storages==1.11
 doc8==0.8.0
 docopt==0.6.2
