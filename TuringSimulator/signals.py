@@ -45,16 +45,13 @@ def delete_files_when_row_deleted_from_db(sender, instance, **kwargs):
 
 @receiver(post_init, sender=TuringMachineDB)
 def machine_preparations(sender, instance, created, **kwargs):
-    print("machine_preparations")
     if created:
-        print("new machine")
         instance.initial_alphabet = instance.alphabet
         instance.initial_number_of_states = instance.number_of_states
         alph = str(instance.alphabet).split(',')
 
         instance.prepare_excel()
     else:
-        print("updated machine")
         # checking if during update user changed alphabet or nr of states
         # if yes, then we need to prepare brand new blank excel of instructions
         if instance.initial_alphabet != instance.alphabet or instance.initial_number_of_states != instance.number_of_states:
@@ -65,5 +62,4 @@ def machine_preparations(sender, instance, created, **kwargs):
 
 @receiver(post_init, sender=ExampleDB)
 def example_preparations(sender, instance, **kwargs):
-    print("example_preparations")
     instance.prepare_instruction_steps_file()

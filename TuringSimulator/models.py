@@ -3,18 +3,15 @@ from django.contrib.auth.models import User
 from turing_utils.scripts.turing_draft import InstructionBox, Instruction, TuringMachine
 from .validators import validate_file_extension
 from django.urls import reverse
-from turing_utils.scripts.excel_utils import generate_xlsx_file, generate_instructions_from_xlsx_file
-from Django_project.settings import MEDIA_ROOT, DEFAULT_FILE_STORAGE, AWS_STORAGE_BUCKET_NAME, AWS_ACCESS_KEY_ID, AWS_DEFAULT_ACL, AWS_SECRET_ACCESS_KEY, AWS_S3_REGION_NAME
+from turing_utils.scripts.excel_utils import generate_instructions_from_xlsx_file
 from django.db.models import Q
-from tempfile import NamedTemporaryFile
 import boto3
-from openpyxl import Workbook, styles as ops, load_workbook
+from openpyxl import load_workbook
 
 
 s3 = boto3.resource('s3')
 
 FILES_PATH = 'excel_files/'
-# DEFAULT_EXCEL_FILE_PATH = FILES_PATH + 'default_excel.xlsx'
 AWS_EXCEL_FILE_PATH = 'https://turing-machine-files-bucket.s3.us-east-2.amazonaws.com/excel_files/'
 DEFAULT_EXCEL_FILE_PATH = AWS_EXCEL_FILE_PATH + 'default_excel.xlsx'
 
@@ -46,7 +43,6 @@ def validate_example_avoid_duplicates(example_cont, user_id, machine_id):
 class TuringMachineDB(models.Model):
     title = models.CharField(max_length=100)
     is_decisive = models.BooleanField(default=False)
-    # has to be specific string
     instructions = models.FileField(upload_to='excel_files', default=DEFAULT_EXCEL_FILE_PATH, validators=[validate_file_extension])
     number_of_states = models.IntegerField()
     alphabet = models.CharField(max_length=100)
@@ -56,8 +52,6 @@ class TuringMachineDB(models.Model):
     initial_number_of_states = models.IntegerField(default=0)
     initial_alphabet = models.CharField(max_length=100, default='')
     excel_empty = models.BooleanField(default=True)
-    aws_file_key = models.CharField(max_length=100, default='')
-    aws_file_path = models.CharField(max_length=100, default='')
 
     def __str__(self):
         return self.title
@@ -87,7 +81,6 @@ class TuringMachineDB(models.Model):
         #     generate_instructions_from_xlsx_file(self.instructions.path, True, files[1], examples)
 
 
-
 class ExampleDB(models.Model):
     machine = models.ForeignKey(TuringMachineDB, on_delete=models.CASCADE)
     content = models.CharField(max_length=50)
@@ -113,16 +106,12 @@ class ExampleDB(models.Model):
     def prepare_steps_text(self):
         workbook = load_workbook(self.machine.instructions)
         instructions = generate_instructions_from_xlsx_file(filename='', ready_workbook=workbook)
-        # print(str(self.machine.instructions.path))
-        # for i in instructions:
-        #     print(str(i))
-        examples = []
+        examples = list()
         examples.append(self.format_content())
         machine_obj = TuringMachine(int(self.machine.starting_index), 'q0', instructions, examples, is_decisive=self.machine.is_decisive)
         output, last_value = machine_obj.start_machine()
         self.example_steps = output.getvalue()
         if self.machine.is_decisive:
             self.last_value = str(last_value)
-        # print(self.example_steps)
 
 
