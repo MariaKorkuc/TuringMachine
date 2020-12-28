@@ -105,7 +105,7 @@ class TuringMachine:
         current_q = self.starting_state
         current_value = None
         check = 0
-        indexes_of_where_the_arrow_is = []
+        indexes_of_where_the_arrow_is = [index,]
         while not ended and check < stop:
             check += 1
             # assuring the infinity of the tape

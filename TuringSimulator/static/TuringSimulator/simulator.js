@@ -17,7 +17,7 @@ var init_lookAt_pos;
 const colors = [0xE199FF, 0xFFFFFF, 0x49F8FF, 0xFFBD00, 0x6AFE8B, 0xFF31A7, 0x54FFFB];
 var crystals = [];
 var start_moving = false;
-var interval = 2000;
+var interval = 1500;
 var lastTime = 0;
 
 function init()
@@ -149,10 +149,12 @@ function eventListeners()
                 {
                     init_letters();
                     start_moving = true;
+                    update_visibility();
                 }
                 if(!not_initiated)
                 {
-                    setInterval(function(){go();}, 2000);
+                    go();
+                    setInterval(function(){go();}, interval);
                 }
                 break;
             default:
@@ -169,12 +171,12 @@ function go()
 {
     if(enter_call%2 == 0)
     {
-        next_machine_state();
+        update_letter();
         enter_call++;
     }
     else
     {
-        update_letter();
+        next_machine_state();
         enter_call++;
     }
     prepare_arrow();
@@ -200,6 +202,7 @@ function init_letters()
     }
 
     var result = document.getElementById("lines").textContent;
+//    alert(result);
 
     var lines = result.split('\n');
     for(var i = 0; i < lines.length; i++)
@@ -207,14 +210,19 @@ function init_letters()
         var line = lines[i];
         if(line[0] == 'E')
         {
+            var instr = [];
+            instr = instr.concat(empty_signs);
             for(var j = 2; j<line.length; j++)
             {
                 var letter = line[j];
                 if(letter != '[' && letter != '\'' && letter != ',' && letter != ' ' && letter != ']')
                 {
                     example.push(letter);
+                    instr.push(letter);
                 }
             }
+            instr = instr.concat(empty_signs);
+            instructions.push(instr);
         }
         else if(line[0] == '[')
         {
@@ -350,13 +358,13 @@ function move_tape(to_right)
         for(var i = letters.length - 1; i >= 1; i--)
         {
             new TWEEN.Tween( letters[i].position )
-                    .to( { x: letters[i-1].position.x, y: letters[i-1].y, z: letters[i-1].z}, 2000 )
+                    .to( { x: letters[i-1].position.x, y: letters[i-1].y, z: letters[i-1].z}, interval )
                     .easing( TWEEN.Easing.Exponential.InOut )
                     .start();
         }
 
         new TWEEN.Tween( letters[0].position )
-                    .to( { x: letters[0].position.x - letter_box_side_length - 10, y: letters[0].y, z: letters[0].z}, 2000 )
+                    .to( { x: letters[0].position.x - letter_box_side_length - 10, y: letters[0].y, z: letters[0].z}, interval )
                     .easing( TWEEN.Easing.Exponential.InOut )
                     .start();
 
@@ -366,13 +374,13 @@ function move_tape(to_right)
         for(var i = 0; i < letters.length-1; i++)
         {
             new TWEEN.Tween( letters[i].position )
-                    .to( { x: letters[i+1].position.x, y: letters[i+1].y, z: letters[i+1].z}, 2000 )
+                    .to( { x: letters[i+1].position.x, y: letters[i+1].y, z: letters[i+1].z}, interval )
                     .easing( TWEEN.Easing.Exponential.InOut )
                     .start();
         }
         new TWEEN.Tween( letters[letters.length-1].position )
                     .to( { x: letters[letters.length-1].position.x + letter_box_side_length + 10,
-                    y: letters[letters.length-1].y, z: letters[letters.length-1].z}, 2000 )
+                    y: letters[letters.length-1].y, z: letters[letters.length-1].z}, interval )
                     .easing( TWEEN.Easing.Exponential.InOut )
                     .start();
 
@@ -380,7 +388,7 @@ function move_tape(to_right)
 
 
     new TWEEN.Tween( this )
-    .to( {}, 2000 )
+    .to( {}, interval )
     .onUpdate( render )
 //    .onComplete(update_letter)
     .start();
@@ -408,7 +416,7 @@ function pretty_string(arr)
 function next_machine_state()
 {
     if(not_initiated) return;
-    if(state_to_display == 0)
+    if(state_to_display)
     {
         var h2 = document.createElement('h2');
         // h2.textContent = "Example given: " + example.toString().replace(",", " ");
@@ -431,7 +439,7 @@ function next_machine_state()
         }
         else
         {
-            h3.textContent = "Final state: " + result;
+            h3.textContent = "Result: " + result;
         }
         document.body.appendChild(h3);
         return;

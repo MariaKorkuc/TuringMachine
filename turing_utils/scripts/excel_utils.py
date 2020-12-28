@@ -48,7 +48,7 @@ def generate_xlsx_file(name, alphabet, number_of_states, path = './', empty_mark
             sheet.cell(row=row_number, column=col).fill = ops.PatternFill("solid", fgColor=color)
             sheet.cell(row=row_number, column=col).border = square_border
 
-    sheet["A1"] = f"Instrukcja {name}"
+    sheet["A1"] = f"Instruction {name}"
     sheet["A1"].font = bold_font
     sheet.merge_cells("A1:B1")
     sheet["A2"] = "value"
