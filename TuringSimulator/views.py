@@ -47,6 +47,7 @@ def stylesheet_sim(request):
 def simulation(request, pk):
     example = get_object_or_404(ExampleDB, pk=pk)
     machine_id = example.machine_id
+    empty_sign = example.machine.empty_sign
     lines = example.example_steps
     scratched = static('TuringSimulator/resources/Scratched.png')
     metal = static('TuringSimulator/resources/metal_texture.jpg')
@@ -57,6 +58,7 @@ def simulation(request, pk):
         'metal':metal,
         'machine_id':machine_id,
         'last_value':last_value,
+        'empty_sign':empty_sign,
     }
     return render(request, 'TuringSimulator/simulation.html', context)
 
@@ -145,7 +147,7 @@ class MachineCreateView(LoginRequiredMixin, CreateView):
 
 class MachineUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = TuringMachineDB
-    fields = ['title', 'is_decisive', 'number_of_states', 'alphabet', 'starting_index', 'empty_sign']
+    fields = ['title', 'is_decisive', 'number_of_states', 'alphabet', 'starting_index']
 
     def form_valid(self, form):
         form.instance.author = self.request.user
@@ -160,6 +162,9 @@ class MachineUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
             form.instance.excel_empty = True
             form.instance.initial_number_of_states = form.instance.number_of_states
             form.instance.initial_alphabet = form.instance.alphabet
+        current_examples = ExampleDB.objects.filter(machine_id=id)
+        for example in current_examples:
+            example.prepare_steps_text()
         return super().form_valid(form)
 
     def test_func(self):
@@ -169,7 +174,7 @@ class MachineUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
 class MachineDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = TuringMachineDB
-    success_url = '/TuringSimulator/'
+    success_url = '/'
 
     def test_func(self):
         machine = self.get_object()
@@ -184,5 +189,5 @@ class ExampleDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         return self.request.user == machine.author
 
     def get_success_url(self, **kwargs):
-        return '/TuringSimulator/machine/' + str(self.object.machine_id)
+        return '/machine/' + str(self.object.machine_id)
 

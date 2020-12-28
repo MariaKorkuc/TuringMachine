@@ -153,7 +153,6 @@ function eventListeners()
                 if(!not_initiated)
                 {
                     setInterval(function(){go();}, 2000);
-                    prepare_arrow();
                 }
                 break;
             default:
@@ -178,6 +177,7 @@ function go()
         update_letter();
         enter_call++;
     }
+    prepare_arrow();
 }
 
 function render()
@@ -191,11 +191,12 @@ function is_numeric_char(c) { return /\d/.test(c); }
 
 function init_letters()
 {
+    var empty_sign = document.getElementById("empty_sign").textContent;
     var additional_empty_signs = (number_of_letters_to_display - 1)/2 + 15;
     var empty_signs = []
     for(var i=0; i<additional_empty_signs; i++)
     {
-        empty_signs.push('#');
+        empty_signs.push(empty_sign);
     }
 
     var result = document.getElementById("lines").textContent;
@@ -388,13 +389,14 @@ function move_tape(to_right)
 
 function pretty_string(arr)
 {
+    var empty_sign = document.getElementById("empty_sign").textContent;
     var str = "";
     var i= 0;
-    while(arr[i] == '#')
+    while(arr[i] == empty_sign)
     {
         i++;
     }
-    while(i < arr.length && arr[i] != '#')
+    while(i < arr.length && arr[i] != empty_sign)
     {
         str += arr[i];
         i++;
@@ -478,20 +480,16 @@ function next_machine_state()
 
 function in_delay()
 {
-//    next_machine_state();
     TWEEN.update();
-//    update_letter();
     update_visibility();
 }
 
 function animate() {
-//    if ( (Date.now() - lastTime) < interval) {
-//        return;
-//    }
-//    lastTime = Date.now();
     requestAnimationFrame( animate );
-//    prepare_arrow();
-    in_delay();
+    if(!not_initiated)
+    {
+        in_delay();
+    }
     render();
 }
 

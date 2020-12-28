@@ -77,7 +77,7 @@ class TuringMachine:
     instructions - list of instruction tuples (eg. test_files/input.txt)
     inputs - list of input lists to test machine
     '''
-    def __init__(self, start_index, starting_state, instructions, inputs, is_decisive = False):
+    def __init__(self, start_index, starting_state, instructions, inputs, is_decisive = False, empty_sign = '#'):
         if not isinstance(instructions, InstructionBox):
             self.instructions = InstructionBox(instructions)
         else:
@@ -86,6 +86,7 @@ class TuringMachine:
         self.start_index = start_index
         self.starting_state = starting_state
         self.is_decisive = is_decisive
+        self.empty_sign = empty_sign
 
     def add_example(self, example):
         self.inputs.append(example)
@@ -109,10 +110,10 @@ class TuringMachine:
             check += 1
             # assuring the infinity of the tape
             if index <= -1:
-                example.insert(0, '#')
+                example.insert(0, self.empty_sign)
                 index += 1
             elif index == len(example):
-                example.append('#')
+                example.append(self.empty_sign)
             # finding right instruction for the current state and value in example
             current_instruction = self.find_instruction(s_in=example[index], q_in=current_q)
             # if no instruction provided, end functioning of the machine

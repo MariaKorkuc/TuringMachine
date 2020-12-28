@@ -68,9 +68,9 @@ class ExampleDB(models.Model):
         list_content = list(str(self.content))
         empty_sign = str(self.machine.empty_sign)
         if list_content[0] != empty_sign:
-            list_content.insert(0,'#')
+            list_content.insert(0,empty_sign)
         if list_content[-1] != empty_sign:
-            list_content.append('#')
+            list_content.append(empty_sign)
         return list_content
 
     def prepare_steps_text(self):
@@ -78,7 +78,14 @@ class ExampleDB(models.Model):
         instructions = generate_instructions_from_xlsx_file(filename='', ready_workbook=workbook)
         examples = list()
         examples.append(self.format_content())
-        machine_obj = TuringMachine(int(self.machine.starting_index), 'q0', instructions, examples, is_decisive=self.machine.is_decisive)
+        machine_obj = TuringMachine(
+            int(self.machine.starting_index),
+            'q0',
+            instructions,
+            examples,
+            is_decisive=self.machine.is_decisive,
+            empty_sign=self.machine.empty_sign
+        )
         output, last_value = machine_obj.start_machine()
         self.example_steps = output.getvalue()
         if self.machine.is_decisive:
