@@ -4,13 +4,13 @@ from io import StringIO
 stop = 100
 
 
-def random_example(alphabet, empty_symbol = '#', max_len = 10, min_len = 1):
+def random_example(alphabet, empty_sign ='#', max_len = 10, min_len = 1):
     length = random.randint(min_len, max_len)
     example = []
-    example.append(empty_symbol)
+    example.append(empty_sign)
     for _ in range(length):
         example.append(random.choice(alphabet))
-    example.append(empty_symbol)
+    example.append(empty_sign)
     return example
 
 
