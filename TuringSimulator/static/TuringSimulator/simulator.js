@@ -152,8 +152,8 @@ function eventListeners()
                 }
                 if(!not_initiated)
                 {
-                    prepare_arrow();
                     setInterval(function(){go();}, 2000);
+                    prepare_arrow();
                 }
                 break;
             default:

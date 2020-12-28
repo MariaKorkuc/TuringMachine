@@ -1,7 +1,5 @@
 {% extends "TuringSimulator/base.html" %}
 {% block content %}
-<!--    {% load static %}-->
-<!--    <script src="{% static 'TuringSimulator/dropdown.js' %}" type="text/javascript"></script>-->
     {% if user.is_authenticated and user == object.author or object.author.is_superuser  %}
     <div class="media-body" xmlns="http://www.w3.org/1999/html">
         <div class="article-metadata">
@@ -11,8 +9,6 @@
         {% else %}
             <p>Author: {{object.author}}</p>
         {% endif %}
-<!--            <p>File: {{object.instructions}}</p>-->
-<!--            <p><a href="{{ object.instructions.url }}" target="_blank">{{ object.instructions.url }}</a></p>-->
             <p>Alphabet: {{object.alphabet}}</p>
             <p>{{object.number_of_states}} states</p>
         {% if object.is_decisive %}

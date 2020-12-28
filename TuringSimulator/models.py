@@ -1,10 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import User
-from turing_utils.scripts.turing_draft import InstructionBox, Instruction, TuringMachine
+from turing_utils.scripts.turing_machine import InstructionBox, Instruction, TuringMachine
 from .validators import validate_file_extension
 from django.urls import reverse
 from turing_utils.scripts.excel_utils import generate_instructions_from_xlsx_file
-from django.db.models import Q
 import boto3
 from openpyxl import load_workbook
 
@@ -32,14 +31,6 @@ def parse_to_query(obj):
     return str(obj)
 
 
-def validate_example_avoid_duplicates(example_cont, user_id, machine_id):
-    existing_examples = ExampleDB.objects.filter(Q(Q(author_id=user_id) | Q(author_id=1)) & Q(machine_id=machine_id))
-    for ex in existing_examples:
-        if example_cont == ex.content:
-            return False
-    return True
-
-
 class TuringMachineDB(models.Model):
     title = models.CharField(max_length=100)
     is_decisive = models.BooleanField(default=False)
@@ -58,27 +49,6 @@ class TuringMachineDB(models.Model):
 
     def get_absolute_url(self):
         return reverse('machine-detail', kwargs={'pk': self.pk})
-
-    def prepare_excel(self):
-        print(self.instructions)
-        # name = str(self.title)
-        # alphabet = str(self.alphabet).split(',')
-        # number_of_states = int(self.number_of_states)
-        # empty_mark = str(self.empty_sign)
-        # path = ''
-        # workbook = generate_xlsx_file(name, alphabet, number_of_states, path, empty_mark, return_only_workbook=True)
-        # # filepath = MEDIA_ROOT + f"/excel_files/{name}_{self.author}.xlsx"
-        # # filepath = AWS_EXCEL_FILE_PATH + f"{name}_{self.author}.xlsx"
-        # # filepath = f'excel_files/{name}_{self.author}.xlsx'
-        # with NamedTemporaryFile() as temp:
-        #     workbook.save(temp.name)
-        #     print(temp.name)
-        #     self.aws_file_key = FILES_PATH + f'{name}_{self.author}.xlsx'
-        #     self.aws_file_path = AWS_EXCEL_FILE_PATH + f'{name}_{self.author}.xlsx'
-        #     s3.meta.client.upload_file(temp.name, AWS_STORAGE_BUCKET_NAME, self.aws_file_key)
-        # elif self.excel_filled:
-        #     outputpath = MEDIA_ROOT + f"/excel_files/{name}_{self.author}.xlsx"
-        #     generate_instructions_from_xlsx_file(self.instructions.path, True, files[1], examples)
 
 
 class ExampleDB(models.Model):

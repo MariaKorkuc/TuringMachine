@@ -1,5 +1,5 @@
 # import turing_utils.turing_draft as td
-import turing_utils.scripts.turing_draft as td
+import turing_utils.scripts.turing_machine as td
 
 def machine_use_testing(filename, start_index, starting_state, is_decisive = False, write_changes = False, outfile = None):
     instructions, ex = td.read_instructions_from_file(filename)

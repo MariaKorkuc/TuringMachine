@@ -41,25 +41,3 @@ def delete_files_when_row_deleted_from_db(sender, instance, **kwargs):
             delete_file_if_unused(sender, instance, field, instance_file_field)
 
 # ****************** END MANAGING UNUSED FILES ********************
-
-
-@receiver(post_init, sender=TuringMachineDB)
-def machine_preparations(sender, instance, created, **kwargs):
-    if created:
-        instance.initial_alphabet = instance.alphabet
-        instance.initial_number_of_states = instance.number_of_states
-        alph = str(instance.alphabet).split(',')
-
-        instance.prepare_excel()
-    else:
-        # checking if during update user changed alphabet or nr of states
-        # if yes, then we need to prepare brand new blank excel of instructions
-        if instance.initial_alphabet != instance.alphabet or instance.initial_number_of_states != instance.number_of_states:
-            instance.prepare_excel()
-            instance.initial_number_of_states = instance.number_of_states
-            instance.initial_alphabet = instance.alphabet
-
-
-@receiver(post_init, sender=ExampleDB)
-def example_preparations(sender, instance, **kwargs):
-    instance.prepare_instruction_steps_file()

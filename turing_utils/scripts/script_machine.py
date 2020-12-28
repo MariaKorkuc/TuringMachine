@@ -1,4 +1,4 @@
-import turing_utils.scripts.turing_draft as turing
+import turing_utils.scripts.turing_machine as turing
 import turing_utils.scripts.excel_utils as exl
 import turing_utils.scripts.using_machine as use_test
 import time

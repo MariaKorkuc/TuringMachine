@@ -1,12 +1,19 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic import DetailView, CreateView, UpdateView, DeleteView
-from .models import TuringMachineDB, ExampleDB, validate_example_avoid_duplicates
+from .models import TuringMachineDB, ExampleDB
 from django.http import HttpResponse, HttpResponseRedirect
 from .forms import UploadFileForm
 from django.templatetags.static import static
-from .validators import validate_example_excel_filled_out, validate_example_with_alphabet
+from .validators import (
+    validate_example_excel_filled_out,
+    validate_example_with_alphabet,
+    validate_example_avoid_duplicates,
+    validate_machine_avoid_duplicates,
+    validate_machine_avoid_duplicates_update,
+)
 import boto3
+from django.urls import reverse
 from openpyxl.writer.excel import save_virtual_workbook
 from turing_utils.scripts.excel_utils import generate_xlsx_file
 
@@ -84,9 +91,7 @@ def upload_instruction(request, object_id):
             current_examples = ExampleDB.objects.filter(machine_id=object_id)
             for example in current_examples:
                 example.prepare_steps_text()
-            # next = request.POST.get('next', '/')
-            next = request.META.get('HTTP_REFERER')
-            return HttpResponseRedirect(next)
+            return redirect('machine-detail', pk=object_id)
     else:
         form = UploadFileForm()
     return render(request, 'TuringSimulator/UploadInstr.html', {'form': form})
@@ -107,7 +112,7 @@ class ExampleCreateView(LoginRequiredMixin, CreateView):
         if not validate_example_with_alphabet(content, self.t_machine.alphabet):
             form.add_error(None, 'Not compatible with machine alphabet')
             return super().form_invalid(form)
-        if not validate_example_avoid_duplicates(content, self.request.user.id, self.t_machine.id):
+        if not validate_example_avoid_duplicates(ExampleDB.objects, content, self.request.user.id, self.t_machine.id):
             form.add_error(None, 'This example already exists for the machine')
             return super().form_invalid(form)
         if not validate_example_excel_filled_out(self.t_machine):
@@ -128,8 +133,11 @@ class MachineCreateView(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         form.instance.author = self.request.user
+        title = self.request.POST.get('title')
+        if not validate_machine_avoid_duplicates(TuringMachineDB.objects, self.request.user.id, title):
+            form.add_error(None, f'Machine {title} already exists!')
+            return super().form_invalid(form)
         form.save()
-        form.instance.prepare_excel()
         form.instance.initial_alphabet = form.instance.alphabet
         form.instance.initial_number_of_states = form.instance.number_of_states
         return super().form_valid(form)
@@ -141,6 +149,11 @@ class MachineUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
     def form_valid(self, form):
         form.instance.author = self.request.user
+        id = form.instance.id
+        title = self.request.POST.get('title')
+        if not validate_machine_avoid_duplicates_update(id, TuringMachineDB.objects, self.request.user.id, title):
+            form.add_error(None, f'Machine {title} already exists!')
+            return super().form_invalid(form)
         form.save()
         if form.instance.initial_alphabet != form.instance.alphabet \
                 or form.instance.initial_number_of_states != form.instance.number_of_states:

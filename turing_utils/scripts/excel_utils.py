@@ -1,4 +1,4 @@
-import turing_utils.scripts.turing_draft as turing
+import turing_utils.scripts.turing_machine as turing
 from openpyxl import Workbook, styles as ops, load_workbook
 import sys
 
@@ -106,30 +106,6 @@ def generate_instructions_from_xlsx_file(filename, only_as_tuples = False, fileo
     sys.stdout = original_stdout
     return instructions
 
-
-
-if __name__ == '__main__':
-    alp = ['#', '0', '1']
-    alp2 = ['a', 'b', 'c', 'd']
-    alp3 = ['a', 'b']
-
-    name = 'test2'
-    name2 = 'test1'
-    name3 = 'double_content'
-    
-    nr = 2
-    nr2 = 5
-    nr3 = 9
-
-    examples3 = [['#', 'a', 'a', 'b', '#']]
-
-    # generate_xlsx_file(name,alp,nr)
-    # generate_xlsx_file(name2,alp2,nr2)
-    # generate_xlsx_file(name3,alp3,nr3)
-
-    instructions = generate_instructions_from_xlsx_file(f'{name3}_machine_instructions.xlsx', True, 'test_files/input_2.txt', examples3)
-    # for instr in instructions:
-    #     print(instr)
 
 
 

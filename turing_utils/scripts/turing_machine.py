@@ -3,8 +3,6 @@ from io import StringIO
 
 stop = 100
 
-def validate_db_string_to_instr(instr_string):
-    pass
 
 def random_example(alphabet, empty_symbol = '#', max_len = 10, min_len = 1):
     length = random.randint(min_len, max_len)
@@ -17,7 +15,7 @@ def random_example(alphabet, empty_symbol = '#', max_len = 10, min_len = 1):
 
 
 class Instruction:
-    # instruction_tuple examples: (0,q0,0,q0,r)
+    # instruction_tuple example: (0,q0,0,q0,r)
     def __init__(self, *instruction_tuple):
         self.instr = {'s_in': None, 'q_in': None, 's_out': None, 'q_out': None, 'step': None}
         if len(instruction_tuple) == 1:
@@ -133,7 +131,6 @@ class TuringMachine:
         print(f"# {indexes_of_where_the_arrow_is}")
         return current_value
 
-
     def start_machine(self, write_changes = True, outfile = None):
         # needed in transform_with_instructions function, which example is examined currently
         count = 0
@@ -163,11 +160,6 @@ def line_to_tuple_or_list(string, clear = False, to_list = False):
     t = string[1:-1] if not clear else string
     splitter = ',' if not clear else ' '
     data = []
-    # for x in t.split(splitter):
-    #     if x.isnumeric():
-    #         data.append(int(x))
-    #     else:
-    #         data.append(x)
     for x in t.split(splitter):
         data.append(x)
     if data[-1] == '':
