@@ -34,6 +34,11 @@ ul li::before {
   margin-right: 0.2rem;
 }
 
+.example {
+  columns: 200px;
+}
+
+
 /*
  * Base structure
  */
@@ -110,6 +115,10 @@ body {
     height: 100%
 }
 
+.about{
+  font-size: 18px;
+}
+
 /*
  * Cover
  */
@@ -129,7 +138,19 @@ body {
   color: rgba(255, 255, 255, .5);
 }
 
+footer {
+    position: absolute;
+    bottom: 0;
+    width: 90%;
+}
 
+/*
+.mastfoot mt-auto{
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+}
+*/
 .dropbtn {
   background-color: #3498DB;
   color: white;

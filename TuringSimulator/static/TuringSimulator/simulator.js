@@ -191,10 +191,28 @@ function render()
 
 function is_numeric_char(c) { return /\d/.test(c); }
 
+function get_number(num_list, additional)
+{
+    var result = 0;
+//    example: index = 154, then num_list = [1,5,4], then x10 should be at first 100 (1*100), then 10 (5*10), then 1 (4*1)
+    var x10 = Math.pow(10, num_list.length - 1);
+
+    for(var i = 0; i < num_list.length; i++)
+    {
+        result += num_list[i] * x10;
+        x10 /= 10;
+    }
+
+    result += additional;
+
+    return result;
+}
+
 function init_letters()
 {
     var empty_sign = document.getElementById("empty_sign").textContent;
     var additional_empty_signs = (number_of_letters_to_display - 1)/2 + 15;
+    alert(additional_empty_signs);
     var empty_signs = []
     for(var i=0; i<additional_empty_signs; i++)
     {
@@ -243,14 +261,28 @@ function init_letters()
         else if(line[0] == '#')
         {
             //czyt index_for_arrow
+            alert(line);
+            index_temp = [];
+
             for(var j = 1; j<line.length; j++)
             {
                 var letter = line[j];
                 if(is_numeric_char(letter))
                 {
-                    index_for_arrow.push(additional_empty_signs + parseInt(letter));
+                    index_temp.push(parseInt(letter));
                 }
+                else if(index_temp.length)
+                {
+                    index_for_arrow.push(get_number(index_temp, additional_empty_signs));
+                    index_temp = [];
+                }
+//                if(is_numeric_char(letter))
+//                {
+//                    index_for_arrow.push(additional_empty_signs + parseInt(letter));
+//                }
             }
+
+            alert(index_for_arrow);
         }
     }
 

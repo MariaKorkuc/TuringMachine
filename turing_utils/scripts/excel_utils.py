@@ -67,7 +67,7 @@ def generate_xlsx_file(name, alphabet, number_of_states, path = './', empty_mark
     return f"{path}{filename}.xlsx"
 
 
-def generate_instructions_from_xlsx_file(filename, only_as_tuples = False, fileout = None, examples = None, ready_workbook = None):
+def generate_instructions_from_xlsx_file(filename='', only_as_tuples = False, fileout = None, examples = None, ready_workbook = None):
     if not ready_workbook:
         workbook = load_workbook(filename)
     else:

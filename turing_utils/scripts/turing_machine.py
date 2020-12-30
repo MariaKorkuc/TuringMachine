@@ -18,11 +18,13 @@ class Instruction:
     # instruction_tuple example: (0,q0,0,q0,r)
     def __init__(self, *instruction_tuple):
         self.instr = {'s_in': None, 'q_in': None, 's_out': None, 'q_out': None, 'step': None}
-        if len(instruction_tuple) == 1:
-            instruction_tuple = instruction_tuple[0]
-        elif len(instruction_tuple) < 5:
-            print("Wrong values")
-            exit()
+        try:
+            if len(instruction_tuple) == 1:
+                instruction_tuple = instruction_tuple[0]
+            elif len(instruction_tuple) < 5:
+                raise ValueError("Invalid instruction tuple")
+        except ValueError as ve:
+            print(ve)
         iter = 0
         for key in self.instr:
             self.instr[key] = instruction_tuple[iter]
@@ -42,6 +44,9 @@ class Instruction:
 
 
 class InstructionBox:
+    """
+    Input data: list of Instruction class objects for a machine
+    """
     def __init__(self, instructions=None):
         self.instructions = instructions if instructions else []
 
@@ -138,7 +143,7 @@ class TuringMachine:
         original_stdout = sys.stdout
         string_out = StringIO()
         # go through all examples
-        for example in self.inputs:
+        for _ in self.inputs:
             if outfile:
                 sys.stdout = open(outfile, 'w')
             else:

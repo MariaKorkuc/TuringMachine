@@ -73,13 +73,15 @@ class ExampleDB(models.Model):
             list_content.append(empty_sign)
         return list_content
 
-    def prepare_steps_text(self):
+    def prepare_steps_text(self, updated_start=None):
         workbook = load_workbook(self.machine.instructions)
-        instructions = generate_instructions_from_xlsx_file(filename='', ready_workbook=workbook)
+        instructions = generate_instructions_from_xlsx_file(ready_workbook=workbook)
         examples = list()
         examples.append(self.format_content())
+        index = int(self.machine.starting_index) if updated_start == None else int(updated_start)
+        print(index)
         machine_obj = TuringMachine(
-            int(self.machine.starting_index),
+            index,
             'q0',
             instructions,
             examples,

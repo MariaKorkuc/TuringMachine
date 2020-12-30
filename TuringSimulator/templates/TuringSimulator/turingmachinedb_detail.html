@@ -12,24 +12,26 @@
             <p>Alphabet: {{object.alphabet}}</p>
             <p>{{object.number_of_states}} states</p>
             <p>Empty sign: {{object.empty_sign}}</p>
+        {% if object.starting_index > 0 %}
+            <p>Start from {{object.starting_index}} index</p>
+        {% else %}
+            <p>Start from {{object.starting_index}} index (from the end)</p>
+        {% endif %}
         {% if object.is_decisive %}
             <p>Decisive</p>
         {% else %}
             <p>Not decisive</p>
         {% endif %}
-            {% if not object.author.is_superuser %}
-                <p>Author: {{object.author}}</p>
-            {% endif %}
         {% if object.exampledb_set.all.exists %}
             <p>See simulation for example:</p>
         {% else %}
             <p>No examples for this machine</p>
         {% endif %}
-        <ul>
+        <ul  class="example">
         {% for example in object.exampledb_set.all %}
             {% if example.author == user or example.author.is_superuser %}
             <li>
-                <a href="{% url 'simulation-view' example.id %}">{{example}}</a>
+                <a href="{% url 'simulation-view' example.id %}">{{example|truncatechars:"6"}}</a>
                 {% if example.author == user %}
                     <a href="{% url 'example-delete' example.id %}">Delete</a>
                 {% endif %}

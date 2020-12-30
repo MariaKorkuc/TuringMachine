@@ -164,7 +164,8 @@ class MachineUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
             form.instance.initial_alphabet = form.instance.alphabet
         current_examples = ExampleDB.objects.filter(machine_id=id)
         for example in current_examples:
-            example.prepare_steps_text()
+            example.prepare_steps_text(form.instance.starting_index)
+            print(form.instance.starting_index)
         return super().form_valid(form)
 
     def test_func(self):
