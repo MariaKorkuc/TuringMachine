@@ -1,6 +1,4 @@
 var animation_canvas = document.getElementById('animation');
-// animation_canvas.width = window.innerWidth;
-// animation_canvas.height = window.innerHeight/2;
 var height_sim = window.innerHeight - 200;
 var scene, camera, renderer, renderer2, renderer3, raycaster;
 var lights = [];
@@ -276,10 +274,6 @@ function init_letters()
                     index_for_arrow.push(get_number(index_temp, additional_empty_signs));
                     index_temp = [];
                 }
-//                if(is_numeric_char(letter))
-//                {
-//                    index_for_arrow.push(additional_empty_signs + parseInt(letter));
-//                }
             }
 
             alert(index_for_arrow);
@@ -451,7 +445,6 @@ function next_machine_state()
     if(state_to_display)
     {
         var h2 = document.createElement('h2');
-        // h2.textContent = "Example given: " + example.toString().replace(",", " ");
         h2.textContent = "Example given: " + pretty_string(example);
         document.body.appendChild(h2);
     }
@@ -490,7 +483,6 @@ function next_machine_state()
 
     if(letters.length == 0)
     {
-        //pozycja tego, na ktory ma wskazywac strzalka (middle) - ilość literek przed nim w instrukcji * (dlugosc boku + odstep od kolejnej literki)
         var start_position_x = middle_letter_position.x - index_of_middle * (letter_box_side_length + 10);
         for(var j=0; j<instructions[0].length; j++)
         {
@@ -514,8 +506,6 @@ function next_machine_state()
             move_tape(true);
         }
     }
-
-//    state_to_display += 1;
 }
 
 function in_delay()
