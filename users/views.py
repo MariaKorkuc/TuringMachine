@@ -17,24 +17,3 @@ def register(request):
     else:
         form = UserRegisterForm()
     return render(request, 'users/register.html', {'form': form})
-
-# thanks to that user will have to be logged in to see this page
-# @login_required
-# def profile(request):
-#     if request.method == 'POST':
-#         user_form = UserUpdateForm(request.POST, instance=request.user)
-#         # prof_form = ProfileUpdateForm(request.POST, instance=request.user.profile)
-#         # if user_form.is_valid() and prof_form.is_valid():
-#         if user_form.is_valid():
-#             user_form.save()
-#             # prof_form.save()
-#             messages.success(request, 'Account updated')
-#             return redirect('profile')
-#     else:
-#         user_form = UserUpdateForm(instance=request.user)
-#         # prof_form = ProfileUpdateForm(instance=request.user.profile)
-#     context = {
-#         'user_form': user_form,
-#         # 'prof_form': prof_form,
-#     }
-#     return render(request, 'users/profile.html', context)
