@@ -3,7 +3,7 @@ from django.dispatch import receiver
 from django.db import models
 from .models import TuringMachineDB, ExampleDB
 
-
+# source: https://www.algotech.solutions/blog/python/deleting-unused-django-media-files/
 # ****************** MANAGING UNUSED FILES ********************
 def delete_file_if_unused(model, instance, field, instance_file_field):
     if 'default' not in instance_file_field.name:
