@@ -147,7 +147,7 @@ class MachineCreateView(LoginRequiredMixin, CreateView):
 
 class MachineUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = TuringMachineDB
-    fields = ['title', 'is_decisive', 'number_of_states', 'alphabet', 'starting_index']
+    fields = ['title', 'is_decisive', 'number_of_states', 'alphabet']
 
     def form_valid(self, form):
         form.instance.author = self.request.user
@@ -164,8 +164,7 @@ class MachineUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
             form.instance.initial_alphabet = form.instance.alphabet
         current_examples = ExampleDB.objects.filter(machine_id=id)
         for example in current_examples:
-            example.prepare_steps_text(form.instance.starting_index)
-            print(form.instance.starting_index)
+            example.prepare_steps_text()
         return super().form_valid(form)
 
     def test_func(self):
